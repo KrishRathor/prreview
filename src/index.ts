@@ -32,11 +32,11 @@ app.post('/api/v1/pr', async (req: Request, res: Response) => {
     console.log('here');
 
     const { pull_request } = req.body;
-    console.log(pull_request);
 
     const title = pull_request.title;;
     const username = pull_request.user.login;
     const body = pull_request.body;
+    const number = pull_request.number
 
     console.log('after', pull_request, title, username, body);
 
@@ -49,7 +49,6 @@ app.post('/api/v1/pr', async (req: Request, res: Response) => {
     }
 
     const bounty = await prisma.bounty.findFirst({ where: { id: isBounty } });
-
     if (!bounty) return;
 
     const bountyCreator = await prisma.user.findFirst({ where: { id: bounty.userId } });
@@ -66,10 +65,10 @@ app.post('/api/v1/pr', async (req: Request, res: Response) => {
     await prisma.pr.create({
       data: {
         bountyId: bounty.id,
-        solverId: solver.id
+        solverId: solver.id,
+        number: number.toString()
       }
     })
-
 
   } catch (error) {
     console.log(error);
